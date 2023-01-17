@@ -53,4 +53,8 @@ class User extends Authenticatable
         return $this->hasOne(UserOtp::class, 'user_id');
     }
 
+    public function leaves(){
+        return $this->hasMany(Leave::class);
+    }
+
 }

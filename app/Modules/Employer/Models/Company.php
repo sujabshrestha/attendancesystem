@@ -57,6 +57,10 @@ class Company extends Model
         return $this->hasMany(CompanyGovernmentleave::class, 'company_id');
     }
 
+    public function leaveTypes(){
+        return $this->hasMany(LeaveType::class, 'company_id');
+    }
+
 
 
 }

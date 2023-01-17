@@ -18,9 +18,6 @@ Route::group([
 
     Route::post('login', 'ApiEmployerAuthController@login')->name('login');
 
-
-
-
     Route::group([
         'middleware' => ['auth:api', 'employerMiddleware']
     ], function () {
@@ -40,6 +37,19 @@ Route::group([
             Route::post('/destroy/{id}',  'ApiCompanyController@destroy');
 
             Route::get('/get-companies/{id}',  'ApiCompanyController@getCompaniesByEmployer');
+        });
+
+        Route::group([
+            'prefix' => 'leave-type',
+           
+        ], function () {
+            Route::get('/{company_id}/all','ApiLeavetypeController@index');
+
+            Route::post('/{company_id}/store/','ApiLeavetypeController@store');
+
+            Route::post('/{company_id}/update/{leave_type_id}','ApiLeavetypeController@update');
+
+            Route::post('{company_id}/destroy/{leave_type_id}','ApiLeavetypeController@destroy');
         });
     });
 });

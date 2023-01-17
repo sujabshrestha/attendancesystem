@@ -36,5 +36,17 @@ Route::group([
 
         Route::get('get-candidates/{companyid}', 'ApiCandidateController@getCandidatesByCompany')->name('getCandidatesByCompany');
 
+
+        Route::get('all-leave-requests/{companyid}','ApiCandidateLeaveController@allCandidateLeave')->name('allCandidateLeave');
+
+        Route::get('store-leave-requests/{companyid}','ApiCandidateLeaveController@storeCandidateLeave')->name('storeCandidateLeave');
+
+        Route::get('update-leave-requests/{companyid}/{leave_id}','ApiCandidateLeaveController@updateCandidateLeave')->name('updateCandidateLeave');
+
+        Route::get('delete-leave-requests/{companyid}/{leave_id}','ApiCandidateLeaveController@deleteCandidateLeave')->name('deleteCandidateLeave');
+
+
     });
+
+
 });
