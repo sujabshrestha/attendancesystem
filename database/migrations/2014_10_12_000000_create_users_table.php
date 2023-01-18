@@ -25,8 +25,9 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('image_id')->nullable();
             $table->enum('type', ['employer', 'candidate', 'superadmin'])->nullable();
             $table->foreign('image_id')->references('id')->on('upload_files')->onDelete('set null');
-            $table->unsignedBigInteger('employer_id')->nullable();
-            $table->foreign('employer_id')->references('id')->on('users');
+            
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->foreign('company_id')->references('id')->on('companies');
             $table->rememberToken();
             $table->timestamps();
         });

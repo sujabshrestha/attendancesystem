@@ -19,7 +19,7 @@ Route::group([
     Route::post('login', 'ApiEmployerAuthController@login')->name('login');
 
     Route::group([
-        'middleware' => ['auth:api', 'employerMiddleware']
+        'middleware' => ['auth:api','employerMiddleware']
     ], function () {
 
         Route::get('logout', 'ApiEmployerAuthController@logout')->name('logout');
@@ -43,13 +43,28 @@ Route::group([
             'prefix' => 'leave-type',
            
         ], function () {
-            Route::get('/{company_id}/all','ApiLeavetypeController@index');
+            Route::get('/all','ApiLeavetypeController@index');
 
-            Route::post('/{company_id}/store/','ApiLeavetypeController@store');
+            Route::post('/store','ApiLeavetypeController@store');
 
-            Route::post('/{company_id}/update/{leave_type_id}','ApiLeavetypeController@update');
+            Route::post('/update/{leave_type_id}','ApiLeavetypeController@update');
 
-            Route::post('{company_id}/destroy/{leave_type_id}','ApiLeavetypeController@destroy');
+            Route::post('/destroy/{leave_type_id}','ApiLeavetypeController@destroy');
+        });
+
+        Route::group([
+            'prefix' => '{company_id}/invitation',
+           
+        ], function () {
+            Route::get('/','ApiInvitationController@index');
+
+            Route::post('/store','ApiInvitationController@store');
+
+            Route::post('/update/{leave_type_id}','ApiInvitationController@update');
+
+            Route::post('/destroy/{leave_type_id}','ApiInvitationController@destroy');
+
+            Route::get('/all-candidates','ApiInvitationController@allCandidates');
         });
     });
 });

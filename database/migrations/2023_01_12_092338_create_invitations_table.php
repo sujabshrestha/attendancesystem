@@ -18,8 +18,8 @@ class CreateInvitationsTable extends Migration
             $table->unsignedBigInteger('company_id');
             $table->unsignedBigInteger('candidate_id');
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->foreign('candidate_id')->references('id')->on('candidates')->onDelete('cascade');
-            $table->enum('status', ['verified', 'approved'])->default('verified');
+            $table->foreign('candidate_id')->references('id')->on('users')->onDelete('cascade');
+            $table->enum('status', ['Not-Approved','Approved'])->default('Not-Approved');
             $table->timestamps();
         });
     }

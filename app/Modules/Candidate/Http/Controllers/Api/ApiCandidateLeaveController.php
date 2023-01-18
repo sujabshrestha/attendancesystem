@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Candidate\Models\Leave;
 use Candidate\Http\Resources\CandidateLeaveResource;
 use Candidate\Repositories\candidate\CandidateInterface;
+use Employer\Http\Resources\LeavetypeResource;
+use Employer\Models\LeaveType;
 use Files\Repositories\FileInterface;
 
 
@@ -21,6 +23,22 @@ class ApiCandidateLeaveController extends Controller
         $this->file = $file;
         $this->candidate = $candidate;
     }
+
+    public function getLeaveTypes(){
+        try{
+            $leaveTypes = LeaveType::get();
+
+            $data = [
+                'leaveTypes' => LeavetypeResource::collection($leaveTypes)
+            ];
+            return $this->response->responseSuccess($data, "Successfully Retrieved", 200);
+        
+        } catch(\Exception $e){
+            return $this->response->responseError($e->getMessage());
+        }
+    }
+
+    
     public function allCandidateLeave($company_id){
         try{
             $user_id = Auth()->id();
@@ -44,7 +62,7 @@ class ApiCandidateLeaveController extends Controller
             $leave->candidate_id =$user->candidate->id ;
             $leave->user_id = $user->id;
             $leave->reason = $request->reason;
-            $leave->status =$request->status ;
+            $leave->approved =0;
             $leave->company_id = $company_id;
             if($request->has('document')){
                 $uploadFile = $this->file->storeFile($request->document);
@@ -70,22 +88,25 @@ class ApiCandidateLeaveController extends Controller
             // $leave = Leave::where('user_id',$user->id)->where('company_id',$company_id)->where('id',$id);
             $leave = Leave::where('company_id',$company_id)->where('id',$leave_id)->first();
             if($leave){
-                $leave->candidate_id =$user->candidate->id ;
-                $leave->user_id = $user->id;
-                $leave->reason = $request->reason;
-                $leave->status =$request->status ;
-                $leave->company_id = $request->company_id;
-                if($request->has('document')){
-                    $uploadFile = $this->file->storeFile($request->document);
-                    if($uploadFile){
-                        $leave->document_id = $uploadFile->id;
+                if($leave->approved == 0){
+                    $leave->candidate_id =$user->candidate->id ;
+                    $leave->user_id = $user->id;
+                    $leave->reason = $request->reason;
+                    $leave->status =$request->status ;
+                    $leave->company_id = $request->company_id;
+                    if($request->has('document')){
+                        $uploadFile = $this->file->storeFile($request->document);
+                        if($uploadFile){
+                            $leave->document_id = $uploadFile->id;
+                        }
                     }
-                }
-    
-                if($leave->update() == true){
-                    return $this->response->responseSuccessMsg("Successfully Created", 200);
-                }
-                return $this->response->responseError("Something Went Wrong While Updateing. Please Try Again.");
+                    if($leave->update() == true){
+                        return $this->response->responseSuccessMsg("Successfully Created", 200);
+                    }
+                    return $this->response->responseError("Something Went Wrong While Updateing. Please Try Again.");
+
+                    }
+                return $this->response->responseError("Can Not Update Approved Leave Request.",404);                
             }
             return $this->response->responseError("Leave Record Not Found",404);
           

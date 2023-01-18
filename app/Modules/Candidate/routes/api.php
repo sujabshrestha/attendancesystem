@@ -7,9 +7,6 @@ Route::group([
     'namespace' => config('candidateRoute.namespace.api'),
 ], function () {
 
-
-    //candidate opt verification and first register
-
     Route::post('register', 'ApiCandidateAuthController@register')->name('register');
 
     Route::post('verify-opt', 'ApiCandidateAuthController@verifyOtp')->name('verifyOtp');
@@ -18,11 +15,10 @@ Route::group([
 
     Route::post('login', 'ApiCandidateAuthController@login')->name('login');
 
-
     Route::get('logout', 'ApiCandidateAuthController@logout')->name('logout');
 
     Route::group([
-        'middleware' => 'auth:api',
+        'middleware' => ['auth:api','candidateMiddleware'],
     ], function(){
 
         // Route::group([
@@ -32,19 +28,30 @@ Route::group([
 
         // });
 
-        Route::post('store/{companyid}', 'ApiCandidateController@store')->name('store');
+        
+        Route::post('store/{companyid}', 'ApiCandidateController@store');
 
-        Route::get('get-candidates/{companyid}', 'ApiCandidateController@getCandidatesByCompany')->name('getCandidatesByCompany');
+        Route::get('get-candidates/{companyid}', 'ApiCandidateController@getCandidatesByCompany');
 
+        Route::get('all-leaves/{companyid}','ApiCandidateLeaveController@allCandidateLeave');
 
-        Route::get('all-leave-requests/{companyid}','ApiCandidateLeaveController@allCandidateLeave')->name('allCandidateLeave');
+        Route::get('store-leave/{companyid}','ApiCandidateLeaveController@storeCandidateLeave');
 
-        Route::get('store-leave-requests/{companyid}','ApiCandidateLeaveController@storeCandidateLeave')->name('storeCandidateLeave');
+        Route::get('update-leave/{companyid}/{leave_id}','ApiCandidateLeaveController@updateCandidateLeave');
 
-        Route::get('update-leave-requests/{companyid}/{leave_id}','ApiCandidateLeaveController@updateCandidateLeave')->name('updateCandidateLeave');
+        Route::get('delete-leave/{companyid}/{leave_id}','ApiCandidateLeaveController@deleteCandidateLeave');
 
-        Route::get('delete-leave-requests/{companyid}/{leave_id}','ApiCandidateLeaveController@deleteCandidateLeave')->name('deleteCandidateLeave');
+        Route::get('leave-types','ApiCandidateLeaveController@getLeaveTypes');
 
+            
+        Route::group([
+            'prefix' => '/invitation',
+          
+        ], function(){
+            Route::get('all','ApiCandidateInvitationController@allCandidateInvitations');
+
+            Route::post('invitation-update/{invitation_id}','ApiCandidateInvitationController@updateCandidateInvitation');
+        });
 
     });
 

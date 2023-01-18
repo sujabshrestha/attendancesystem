@@ -45,6 +45,14 @@ class Handler extends ExceptionHandler
           return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
+         //Passport 405 Error Fix - Token Not Sending to serve
+        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            return response([
+                'message' => 'Unauthorized',
+                'status' => 'error',
+            ], 401);
+        }
+
         return redirect('/home');
       }
 

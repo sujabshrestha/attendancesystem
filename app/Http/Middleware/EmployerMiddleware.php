@@ -25,8 +25,15 @@ class EmployerMiddleware
                 return $next($request);
             }
             auth()->user()->token()->revoke();
-            return redirect()->route('login');
+            return response([
+                'message' => 'You Do Not Have Permission.',
+                'status' => 'error',
+            ],401);
         }
-        return redirect()->route('login');
+        
+        return response([
+            'message' => 'Please Log In.',
+            'status' => 'error',
+        ],401);
     }
 }
